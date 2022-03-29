@@ -20,8 +20,6 @@ echo -e ""
 ## Read_Input ##
 read -p 'Your Link to Provide: ' link
 
-link="https://youtu.be/KUIdo-PLUgI"
-
 if [[ "$link" == *"youtube"* ]] || [[ "$link" == *"youtu.be"* ]]; then
     format="mp4"
     path_temp="tmp/"
