@@ -18,7 +18,18 @@ read -p 'Your Link to Provide: ' link
 read -p 'Custom Format?: ' format
 
 if [ -z "$Your_URL" ] || [ -z "$link" ]; then
+    clear
+    echo -e ""
+    echo -e ""
+    echo -e ""
+    echo -e ""
+    echo -e ""
     echo -e "${R} Error! ${E}You don't have setup 'Your_URL or you don't give a correct ${Y}Link ${E}"
+    echo -e ""
+    echo -e ""
+    echo -e ""
+    echo -e ""
+    echo -e ""
     exit
 fi
 ###############################################################
@@ -35,7 +46,9 @@ _done_="$_random_.$_ext_"
 
 
 ## Main ##
+
 echo -e "${Y}* ${E}- Checking if is available"
+sleep 2
 if [ "$_http_code_" -ne "404" ] || [ "$_http_code_" -ne "500" ]; then
     _status_="true"
 else
@@ -70,8 +83,8 @@ fi
 ## Execute ##
 if [ "$_status_" == "true" ]; then
     clear
-    sleep 1
     echo -e "\n${G} Uploading \n"
+    sleep 1
     curl -s -o "$_new_" "$link"
 
     if [[ -f "$_new_" ]]
@@ -84,7 +97,7 @@ if [ "$_status_" == "true" ]; then
         echo -e "[$_date_] ${G}+${E} ${Y}$_new_ ${E}"
         echo "[$_date_] + $_new_" >> CURL.log
     else
-        echo -e "File ${Y} $_new_ ${E}Canot be Uploaded! | Return code is ${R} 404/500 ${E}"
+        echo -e "\n File ${Y} $_new_ ${E}Cannot be Uploaded! | Return code is ${R} 404/500 ${E}"
     fi
 fi
 
