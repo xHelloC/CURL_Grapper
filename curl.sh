@@ -25,7 +25,6 @@ if [[ "$link" == *"youtube"* ]] || [[ "$link" == *"youtu.be"* ]]; then
     path_temp="tmp/"
     touch CURL.log
     file="CURL.log"
-    isInFile=$(cat $file | grep -c "$r")
     echo -e "${Y} initializing || ${G} Checking ${E}"
     ####
     ####
@@ -33,15 +32,15 @@ if [[ "$link" == *"youtube"* ]] || [[ "$link" == *"youtu.be"* ]]; then
 
 
     if [[ "$Ytb_to" == *"100"* ]]; then
+        r=$(find $path_temp -name *."$format")
+        isInFile=$(cat $file | grep -c "$r")
         if [ $isInFile -eq 0 ]; then
-            r=$(find $path_temp -name *."$format")
             echo -e ""
         else
             echo -e ""
             echo -e ""
             echo -e "${R} Error! ${E}Video is already exist! ${Y} !! ${E}"
             echo -e "${E} Check the log ${Y}$file ${E}"
-            r=$(find $path_temp -name *."$format")
             rm -r "$r" > /dev/null
             echo -e ""
             echo -e ""
