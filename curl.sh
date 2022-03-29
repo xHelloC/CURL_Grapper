@@ -1,15 +1,15 @@
 #!/bin/bash
 
 ## Config ##
-Your_CDN = ""
-Your_URL = ""
+Your_CDN="Your_CDN_SERVER"
+Your_URL="Your_Upload_Url"
 #####################
 
 ## Colors ##
-G = "\e[32m"
-R = "\e[31m"
-Y = "\e[33m"
-E = "\e[0m" ## Make Default Color
+G="\e[32m"
+R="\e[31m"
+Y="\e[33m"
+E="\e[0m" ## Make Default Color
 #####################
 
 ## Read_Input ##
@@ -19,10 +19,69 @@ read -p 'Custom Format?: ' format
 ###############################################################
 
 ## Application ##
-_date_      = $(date '+%Y-%m-%d %H:%M:%S')
-_random_    = $(cat /dev/urandom | env LC_ALL=C tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
-_http_code_ = $(curl -s -o "l.log" -w "%{http_code}" "$link")
+_date_=$(date '+%Y-%m-%d %H:%M:%S')
+_random_=$(cat /dev/urandom | env LC_ALL=C tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
+_http_code_=$(curl -s -o /dev/null -w "%{http_code}" "$link")
+_i_=$(basename -- $link)
+_ext_="${_i_##*.}"
+_done_="$_random_.$_ext_"
 #########################################################################################################
 
 ## Main ##
+echo -e "${Y}* ${E}- Checking if is available"
+if [ "$_http_code_" -ne "404" ] || [ "$_http_code_" -ne "500" ]; then
+    _status_="true"
+else
+    _status_="false"
+fi
+
+## Folder Exist ##
+if [ "$_status_" == "true" ]; then
+    if [ -z "$folder" ]; then
+        _new_="$_done_"
+    else
+        if [ -d "$folder" ]; then
+            if [ -z "$format" ]; then
+                _new_="$folder/$_done_"
+            else
+                _new_="$folder/$_random_.$format"
+            fi
+        else
+            if [ -z "$format" ]; then
+                mkdir $folder
+                _new_="$folder/$_done_"
+            else
+                _new_="$_random_.$format"
+            fi
+        fi
+    fi
+else
+    echo -e "Status on remoted page is ${R} 404 or 500 ${E}"
+fi
+##
+
+## Execute ##
+if [ "$_status_" == "true" ]; then
+    clear
+    sleep 1
+    echo -e "\n${G} Uploading \n"
+    curl -s -o "$_new_" "$link"
+
+    if [[ -f "$_new_" ]]
+    then
+        echo -e "Unique  :   ${Y}$_random_ ${E}"
+        echo -e "New File:   $_new_ ${E}"
+        echo -e "Link    :  ${Y} $Your_URL/$_new_"
+        echo -e "${E}"
+        echo -e "${G}" && ls -la $_new_ && echo -e "${E}"
+        echo -e "[$_date_] ${G}+${E} ${Y}$_new_ ${E}"
+        echo "[$_date_] + $_new_" >> CURL.log
+    else
+        echo -e "File ${Y} $_new_ ${E}Canot be Uploaded! | Return code is ${R} 404/500 ${E}"
+    fi
+fi
+
+############################################
+
+
 
