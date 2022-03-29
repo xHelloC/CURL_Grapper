@@ -23,20 +23,38 @@ read -p 'Your Link to Provide: ' link
 if [[ "$link" == *"youtube"* ]] || [[ "$link" == *"youtu.be"* ]]; then
     format="mp4"
     path_temp="tmp/"
+    touch CURL.log
+    file="CURL.log"
+    isInFile=$(cat $file | grep -c "$r")
+    echo -e "${Y} initializing || ${G} Checking ${E}"
     ####
     ####
     Ytb_to="$(cd "$path_temp" && pytube $link)"
 
+
     if [[ "$Ytb_to" == *"100"* ]]; then
-        r=$(find $path_temp -name *."$format")
+        if [ $isInFile -eq 0 ]; then
+            r=$(find $path_temp -name *."$format")
+            echo -e ""
+        else
+            echo -e ""
+            echo -e ""
+            echo -e "${R} Error! ${E}Video is already exist! ${Y} !! ${E}"
+            echo -e "${E} Check the log ${Y}$file ${E}"
+            r=$(find $path_temp -name *."$format")
+            rm -r "$r" > /dev/null
+            echo -e ""
+            echo -e ""
+            exit
+        fi
         cp "$r" ytb/$_random_.$format
-        rm -r "$r"
+        rm -r "$r" > /dev/null
         echo -e "Unique  :   ${Y}$_random_ ${E}"
         echo -e "Link    :  ${Y} $Your_URL/ytb/$_random_.$format"
         echo -e "${E}"
         echo -e "${G}" && ls -la ytb/$_random_.$format && echo -e "${E}"
-        echo -e "[$_date_] ${G}+ [YTB] ${E} ${Y} $_random_.$format ${E}"
-        echo "[$_date_]+ [YTB]  $_random_.$format" >> CURL.log
+        echo -e "[$_date_] ${G}+ [YTB] ${Y}[$r] ${E} ${Y} $_random_.$format ${E}"
+        echo "[$_date_] + [YTB] [$r]  $_random_.$format" >> CURL.log
         exit
     else
         echo -e ""
