@@ -3,6 +3,8 @@
 ## Config ##
 Your_CDN="Your_CDN_SERVER"
 Your_URL="Your_Upload_Url"
+_date_=$(date '+%Y-%m-%d %H:%M:%S')
+_random_=$(cat /dev/urandom | env LC_ALL=C tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
 #####################
 
 ## Colors ##
@@ -12,10 +14,42 @@ Y="\e[33m"
 E="\e[0m" ## Make Default Color
 #####################
 
+echo -e "########### ${Y} File Downloader! ${E} ############## ${R}ver. 3.20 ${E}"
+echo -e ""
+
 ## Read_Input ##
-read -p 'YourFolder to Upload: ' folder
 read -p 'Your Link to Provide: ' link
-read -p 'Custom Format?: ' format
+
+link="https://youtu.be/KUIdo-PLUgI"
+
+if [[ "$link" == *"youtube"* ]] || [[ "$link" == *"youtu.be"* ]]; then
+    format="mp4"
+    path_temp="tmp/"
+    ####
+    ####
+    Ytb_to="$(cd "$path_temp" && pytube $link)"
+
+    if [[ "$Ytb_to" == *"100"* ]]; then
+        r=$(find $path_temp -name *."$format")
+        cp "$r" ytb/$_random_.$format
+        rm -r "$r"
+        echo -e "Unique  :   ${Y}$_random_ ${E}"
+        echo -e "Link    :  ${Y} $Your_URL/ytb/$_random_.$format"
+        echo -e "${E}"
+        echo -e "${G}" && ls -la ytb/$_random_.$format && echo -e "${E}"
+        echo -e "[$_date_] ${G}+ [YTB] ${E} ${Y} $_random_.$format ${E}"
+        echo "[$_date_]+ [YTB]  $_random_.$format" >> CURL.log
+        exit
+    else
+        echo -e ""
+        echo -e "${R} Error! ${E}Video is already exist! ${Y} !! ${E}"
+        echo -e ""
+        exit
+    fi
+else
+     read -p 'YourFolder to Upload: ' folder
+     read -p 'Custom Format?: ' format
+fi
 
 if [ -z "$Your_URL" ] || [ -z "$link" ]; then
     clear
@@ -35,8 +69,6 @@ fi
 ###############################################################
 
 ## Application ##
-_date_=$(date '+%Y-%m-%d %H:%M:%S')
-_random_=$(cat /dev/urandom | env LC_ALL=C tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
 _http_code_=$(curl -s -o /dev/null -w "%{http_code}" "$link")
 _i_=$(basename -- $link)
 _ext_="${_i_##*.}"
