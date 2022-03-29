@@ -16,6 +16,11 @@ E="\e[0m" ## Make Default Color
 read -p 'YourFolder to Upload: ' folder
 read -p 'Your Link to Provide: ' link
 read -p 'Custom Format?: ' format
+
+if [ -z "$Your_URL" ] || [ -z "$link" ]; then
+    echo -e "${R} Error! ${E}You don't have setup 'Your_URL or you don't give a correct ${Y}Link ${E}"
+    exit
+fi
 ###############################################################
 
 ## Application ##
@@ -26,6 +31,8 @@ _i_=$(basename -- $link)
 _ext_="${_i_##*.}"
 _done_="$_random_.$_ext_"
 #########################################################################################################
+
+
 
 ## Main ##
 echo -e "${Y}* ${E}- Checking if is available"
